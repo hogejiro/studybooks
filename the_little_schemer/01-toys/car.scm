@@ -1,1 +1,1 @@
-(print (car ' (((hotdogs)) (and_) (pickle) relish)))
+(print (car '(((hotdogs)) (and) (pickle) relish)))

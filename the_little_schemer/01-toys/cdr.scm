@@ -1,1 +1,1 @@
-(print (cdr (cdr ' ((b) (x y) ((c))))))
+(print (cdr (cdr '((b) (x y) ((c))))))

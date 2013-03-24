@@ -1,0 +1,5 @@
+(load "../bootstrap.scm")
+(select-module misc)
+(print (lat? '(Jack (Spart could) eat no chiecken fat)))
+(print (lat? '(bacon and eggs)))
+(print (lat? '(bacon (and eggs))))
