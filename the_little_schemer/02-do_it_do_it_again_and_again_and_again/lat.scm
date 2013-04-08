@@ -1,4 +1,5 @@
-(load "../bootstrap.scm")
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
 (select-module misc)
 (print (lat? '(Jack (Spart could) eat no chiecken fat)))
 (print (lat? '(bacon and eggs)))

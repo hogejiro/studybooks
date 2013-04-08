@@ -1,4 +1,5 @@
-(load "../bootstrap.scm")
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
 (select-module misc)
 (print (atom? 'Harry))
 (print (atom? '()))
