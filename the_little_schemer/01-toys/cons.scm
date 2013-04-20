@@ -1,3 +1,6 @@
 (print (cons '((help) this) '(is very ((hard) to learn))))
+; (((help) this) is very ((hard) to learn))
 (print (cons '(a b (c)) '()))
+; ((a b (c)))
 (print (cons 'a '()))
+; (a)

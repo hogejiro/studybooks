@@ -2,6 +2,10 @@
 (load "bootstrap.scm")
 (select-module misc)
 (print (atom? 'Harry))
+; #t
 (print (atom? '()))
+; #f
 (print (atom? '(car (cdr '(swing low sweet cherry oat)))))
+; #f
 (print (atom? (car (cdr '(swing low sweet cherry oat)))))
+; #t
