@@ -1,0 +1,5 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module conses)
+(print (multisubst 'fried 'fish '(chips and fish or fish and fried)))
+; (chips and fried or fried and fried)

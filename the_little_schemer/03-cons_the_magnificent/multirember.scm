@@ -1,0 +1,5 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module conses)
+(print (multirember 'cup '(coffee cup tea cup and hick cup)))
+; (coffee tea and hick)

@@ -1,0 +1,7 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module conses)
+(print (rember 'mint '(lamb chops and mint jelly)))
+; (lamb chops and jelly)
+(print (rember 'mint '(lamb chops and mint flavored mint jelly)))
+; (lamb chops and flavored mint jelly)
