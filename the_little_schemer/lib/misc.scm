@@ -12,7 +12,7 @@
   (lambda (a lat)
    (cond
     ((null? lat) #f)
-    (else (or (eq? a (car lat))
+    (else (or (eq? (car lat) a)
            (member? a (cdr lat)))))))
  (export misc)
 )
