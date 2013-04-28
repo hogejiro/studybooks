@@ -1,0 +1,5 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module nums)
+(print (tup+ '(3 7 8 1) '(4 6)))
+; (7 13 8 1)

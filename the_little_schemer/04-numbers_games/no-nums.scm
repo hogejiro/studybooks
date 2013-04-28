@@ -1,0 +1,5 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module nums)
+(print (no-nums '(5 pears 6 prunes 9 dates)))
+; (pears prunes dates)
