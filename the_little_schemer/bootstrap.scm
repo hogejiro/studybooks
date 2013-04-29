@@ -1,4 +1,6 @@
 (add-load-path "lib" :relative)
-(load "misc.scm")
+(load "toys.scm")
+(load "agains.scm")
 (load "conses.scm")
 (load "nums.scm")
+(load "stars.scm")
