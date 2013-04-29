@@ -1,0 +1,7 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module stars)
+(print (rember* 'cup '((coffee) cup ((tea) cup) (and (hick)) cup)))
+; ((coffee) ((tea)) (and (hick)))
+(print (rember* 'sauce '(((tomato sauce)) ((bean) sauce) (and ((flying)) sauce))))
+; (((tomato)) ((bean)) (and ((flying))))
