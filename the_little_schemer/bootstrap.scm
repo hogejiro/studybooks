@@ -4,3 +4,4 @@
 (load "conses.scm")
 (load "nums.scm")
 (load "stars.scm")
+(load "shadows.scm")
