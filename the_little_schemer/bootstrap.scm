@@ -5,3 +5,4 @@
 (load "nums.scm")
 (load "stars.scm")
 (load "shadows.scm")
+(load "relations.scm")

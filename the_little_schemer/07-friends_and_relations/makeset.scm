@@ -1,0 +1,7 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module relations)
+(print (makeset '(apple peach pear peach plum apple lemon peach)))
+; (pear plum apple lemon peach)
+(print (makeset '(apple 3 pear 4 9 apple 3 4)))
+; (apple 3 pear 4 9)
