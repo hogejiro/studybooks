@@ -1,0 +1,5 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module lambda)
+(print (multiremberT eq?-tuna '(shrimp salad tuna salad and tuna)))
+; (shrimp salad salad and)

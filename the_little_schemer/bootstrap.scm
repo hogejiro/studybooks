@@ -6,3 +6,4 @@
 (load "stars.scm")
 (load "shadows.scm")
 (load "relations.scm")
+(load "lambda.scm")

@@ -1,0 +1,5 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module lambda)
+(print (multiinsertLR 'salty 'tuna 'salad '(tuna and salad or tuna or salad or nothing)))
+; (salt tuna and salad salt or salt tuna or salad salt or nothing)
