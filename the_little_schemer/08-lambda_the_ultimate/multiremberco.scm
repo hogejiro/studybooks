@@ -5,6 +5,7 @@
  (lambda (x y)
   (null? y)))
 (print (multirember&co 'tuna '(tuna) a-friend))
+; #f
 (define length
  (lambda (lat)
   (cond
@@ -14,3 +15,4 @@
  (lambda (x y)
   (length x)))
 (print (multirember&co 'tuna '(strawberries tuna and swordfish) last-friend))
+; 3
