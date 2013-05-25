@@ -1,0 +1,7 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module againandagains)
+(print (shift '((a b) c)))
+; (a (b c))
+(print (shift '((a b) (c d))))
+; (a (b (c d)))
