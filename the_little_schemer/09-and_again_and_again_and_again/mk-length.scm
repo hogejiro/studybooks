@@ -10,4 +10,4 @@
            (else (add1
                   ((mk-length mk-length) (cdr l))))))))
         '(a b c d)))
-; 3
+; 4

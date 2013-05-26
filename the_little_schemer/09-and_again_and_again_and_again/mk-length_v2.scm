@@ -12,4 +12,4 @@
           (lambda (x)
            ((mk-length mk-length) x)))))
         '(a b c d)))
-; 3
+; 4
