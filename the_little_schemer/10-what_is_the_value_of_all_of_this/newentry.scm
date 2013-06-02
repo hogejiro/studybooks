@@ -1,0 +1,5 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module values)
+(print (new-entry '(appetizer entree beverage) '(patee boeuf vin)))
+; ((appetizer entree beverage) (patee boeuf vin))

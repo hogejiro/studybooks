@@ -1,0 +1,10 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module values)
+(print (meaning '((((u v w)
+                          (1 2 3))
+                         ((x y z)
+                          (4 5 6)))
+                        (x y)
+                        (cons z x)) '((a b c) (d e f))))
+; error

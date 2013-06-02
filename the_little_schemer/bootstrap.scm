@@ -8,3 +8,4 @@
 (load "relations.scm")
 (load "lambda.scm")
 (load "againandagains.scm")
+(load "values.scm")

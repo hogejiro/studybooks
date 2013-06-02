@@ -1,0 +1,13 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module values)
+(print (value '(((lambda (le)
+                  ((lambda (f) (f f))
+                   (lambda (f)
+                    (le (lambda (x) ((f f) x))))))
+                 (lambda (length)
+                  (lambda (l)
+                   (cond ((null? l) 0)
+                    (else (add1 (length (cdr l))))))))
+                '(a b c d))))
+; 4
