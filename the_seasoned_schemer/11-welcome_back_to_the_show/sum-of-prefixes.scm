@@ -1,0 +1,7 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module shows)
+(print (sum-of-prefixes '(2 1 9 17 0)))
+; (2 3 12 29 29)
+(print (sum-of-prefixes '(1 1 1 1 1)))
+; (1 2 3 4 5)
