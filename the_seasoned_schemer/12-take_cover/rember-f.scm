@@ -1,0 +1,5 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module covers)
+(print ((rember-f eq?) 'blue '(red blue yellow blue)))
+; (red yellow blue)
