@@ -25,7 +25,8 @@
              (mr (cdr lat)))
             (else
              (cons (car lat)
-              (mr (cdr lat)))))))))
+              (mr (cdr lat))))))))
+     mr)
     lat)))
  (define multirember-dash
   (lambda (a lat)
