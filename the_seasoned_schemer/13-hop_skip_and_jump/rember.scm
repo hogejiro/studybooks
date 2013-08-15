@@ -1,0 +1,5 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module skips)
+(print (rember 'roots '(noodles spaghetti spatzle bean-thread roots potatoes yam others rice)))
+; (noodles spaghetti spatzle bean-thread potatoes yam others rice)
