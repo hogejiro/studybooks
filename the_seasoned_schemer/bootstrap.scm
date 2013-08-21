@@ -2,3 +2,4 @@
 (load "shows.scm")
 (load "covers.scm")
 (load "skips.scm")
+(load "names.scm")
