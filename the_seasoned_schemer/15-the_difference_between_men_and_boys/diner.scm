@@ -1,0 +1,5 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module differences)
+(print (diner (quote onion)))
+; (milkshake onion)

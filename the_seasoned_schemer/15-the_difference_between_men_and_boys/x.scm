@@ -1,0 +1,8 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module differences)
+(print x)
+(set! x (quote gone))
+(print x)
+(define x (quote skins))
+(print x)

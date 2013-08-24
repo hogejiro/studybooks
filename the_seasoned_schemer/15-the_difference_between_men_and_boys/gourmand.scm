@@ -1,0 +1,8 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module differences)
+(set! x (quote rings))
+(print (gourmand (quote potato)))
+; (potato potato)
+(print (gourmand 'rice))
+; (rice rice)

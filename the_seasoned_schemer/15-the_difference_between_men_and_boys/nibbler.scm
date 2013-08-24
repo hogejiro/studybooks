@@ -1,0 +1,6 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module differences)
+(print (nibbler (quote cheerio)))
+; (cheerio cheerio)
+(print x)

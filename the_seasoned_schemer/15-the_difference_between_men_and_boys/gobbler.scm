@@ -1,0 +1,7 @@
+(add-load-path ".." :relative)
+(load "bootstrap.scm")
+(select-module differences)
+(print (gobbler 'gumbo))
+; (gumbo gumbo)
+(print x)
+; (chicago pizza)

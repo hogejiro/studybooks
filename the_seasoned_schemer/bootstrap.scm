@@ -3,3 +3,4 @@
 (load "covers.scm")
 (load "skips.scm")
 (load "names.scm")
+(load "differences.scm")
