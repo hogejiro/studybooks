@@ -2,5 +2,7 @@
 (load "bootstrap.scm")
 (select-module differences)
 (set! x (quote skins))
+(print x)
 (print (gourmet 'onion))
 ; (onion skins)
+(print x)

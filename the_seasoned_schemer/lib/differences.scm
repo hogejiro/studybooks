@@ -46,14 +46,14 @@
      (cons x
       (quote ()))))))
  (define adder-no-closure
-  (lambda (n)
+  (lambda ()
    (let ((cnt 0))
-    (set! cnt (+ cnt n))
+    (set! cnt (+ cnt 1))
     (print cnt))))
  (define adder-closure
   (let ((cnt 0))
-   (lambda (n)
-    (set! cnt (+ cnt n))
+   (lambda ()
+    (set! cnt (+ cnt 1))
     (print cnt))))
  (define food (quote none))
  (define glutton
