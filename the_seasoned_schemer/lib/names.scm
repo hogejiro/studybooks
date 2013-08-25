@@ -86,12 +86,10 @@
           (else
            (let ((av (R (car l))))
             (cond
-             ((eqlist?
-               (R (car l))
-               (car l))
+             ((eqlist? (car l) av)
               (cons (car l)
                (R (cdr l))))
-             (else (cons (R (car l))
+             (else (cons av
                     (cdr l))))))))))
     (R l))))
  (define add1
