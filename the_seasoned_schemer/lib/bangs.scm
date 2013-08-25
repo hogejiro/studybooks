@@ -94,7 +94,7 @@
       result)))))
  (define atom?
   (lambda (a)
-   (or (not (null? a))
+   (and (not (null? a))
     (not (pair? a)))))
  (define deepM-e
   (let ((Rs (quote ()))
