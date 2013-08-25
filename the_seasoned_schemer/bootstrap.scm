@@ -5,3 +5,4 @@
 (load "names.scm")
 (load "differences.scm")
 (load "bangs.scm")
+(load "changes.scm")
