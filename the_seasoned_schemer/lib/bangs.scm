@@ -68,11 +68,11 @@
      (set! Rs (cons result Rs))
      (set! Ns (cons n Ns))
      result))))
- (define deep-b
+ (define deep
   (lambda (m)
    (cond
     ((zero? m) (quote pizza))
-    (else (cons (deep-b (sub1 m))
+    (else (cons (deep (sub1 m))
            (quote ()))))))
  (define deepM-c
   (lambda (n)
@@ -106,13 +106,13 @@
       (set! Ns (cons n Ns))
        result)
      (find n Ns Rs)))))
- (define deepM-f
+ (define deepM
   (let ((Rs (quote ()))
         (Ns (quote ())))
    (lambda (n)
     (let ((exists (find n Ns Rs)))
      (if (atom? exists)
-      (let ((result (deep-b n)))
+      (let ((result (deep n)))
        (set! Rs (cons result Rs))
        (set! Ns (cons n Ns))
         result)
