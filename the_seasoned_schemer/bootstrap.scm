@@ -4,3 +4,4 @@
 (load "skips.scm")
 (load "names.scm")
 (load "differences.scm")
+(load "bangs.scm")
