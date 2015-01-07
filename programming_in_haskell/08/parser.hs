@@ -27,8 +27,7 @@ p +++ q = \inp -> case parse p inp of
                     [(v, out)] -> [(v, out)]
 
 sat :: (Char -> Bool) -> Parser Char
-sat p = do x <- item
-           if p x then myreturn x else failure
+sat p = item >>>= \x -> if p x then myreturn x else failure
 
 lower :: Parser Char
 lower = sat isLower
@@ -49,8 +48,36 @@ char :: Char -> Parser Char
 char x = sat (== x)
 
 string :: String -> Parser String
-string [] = return []
-string (x:xs) = do char x
-                   string xs
-                   myreturn (x:xs)
+string [] = myreturn []
+string (x:xs) = char x >>>= const (string xs) >>>= const (myreturn (x:xs))
+
+many :: Parser a -> Parser [a]
+many p = many1 p +++ myreturn []
+
+many1 :: Parser a -> Parser [a]
+many1 p = p >>>= \v -> many p >>>= \vs -> myreturn (v:vs)
+
+ident :: Parser String
+ident = lower >>>= \x -> (many alphanum) >>>= \xs -> myreturn (x:xs)
+
+nat :: Parser Int
+nat = (many1 digit) >>>= \xs -> myreturn (read xs)
+
+space :: Parser ()
+space = (many (sat isSpace)) >>>= \xs -> myreturn ()
+
+token :: Parser a -> Parser a
+token p = space >>>= const p >>>= \v -> space >>>= const (myreturn v)
+
+identifier :: Parser String
+identifier = token ident
+
+natural :: Parser Int
+natural = token nat
+
+symbol :: String -> Parser String
+symbol xs = token (string xs)
+
+natural_list :: Parser [Int]
+natural_list = symbol "[" >>>= const natural >>>= \n -> (many (symbol "," >>>= const natural)) >>>= \ns -> symbol "]" >>>= const (myreturn (n:ns))
 
