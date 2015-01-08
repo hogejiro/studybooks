@@ -81,3 +81,22 @@ symbol xs = token (string xs)
 natural_list :: Parser [Int]
 natural_list = symbol "[" >>>= const natural >>>= \n -> (many (symbol "," >>>= const natural)) >>>= \ns -> symbol "]" >>>= const (myreturn (n:ns))
 
+expr :: Parser Int
+expr = term >>>= \t -> ((symbol "+" >>>= const expr >>>= \e -> myreturn (t + e))) +++ myreturn t
+
+term :: Parser Int
+term = factor >>>= \f -> ((symbol "*" >>>= const term >>>= \t -> myreturn (f * t))) +++ myreturn f
+
+factor :: Parser Int
+factor = (symbol "(" >>>= const expr >>>= \e -> symbol ")" >>>= const (myreturn e)) +++ natural
+
+eval :: String -> Int
+eval xs = case parse expr xs of
+            [(n, [])] -> n
+            [(_, out)] -> error ("unused input " ++ out)
+            [] -> error "invalid input"
+
+-- exercise 1
+-- The library file also defines a parser int :: Parser Int for an integer. Without looking at this definition, define int.
+int :: Parser Int
+int = (symbol "-" >>>= const natural >>>= \n -> myreturn (-n)) +++ natural
