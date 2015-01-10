@@ -1,0 +1,39 @@
+-- expr
+-- = { apply expr -> term + expr }
+-- term + expr
+-- = { apply (expr -> term }
+-- term + term
+-- = { apply (term -> factor -> nat) }
+-- nat + nat
+-- = { apply nat -> number }
+-- 2 + 3
+
+-- expr
+-- = { apply expr -> term }
+-- term
+-- = { apply term -> factor * term }
+-- factor * term
+-- = { apply term -> factor * term }
+-- factor * factor * term
+-- = { apply term -> factor }
+-- factor * factor * factor
+-- = { apply all factor -> nat }
+-- nat * nat * nat
+-- = { apply all nat -> number }
+-- 2 * 3 * 4
+
+-- expr
+-- = { apply expr -> term + expr }
+-- term + expr
+-- = { apply term -> factor }
+-- factor + expr
+-- = { apply factor -> (expr) }
+-- (expr) + expr
+-- = { apply the first expr -> term + expr }
+-- (term + expr) + expr
+-- = { apply all expr -> term }
+-- (term + term) + term
+-- = { apply all term -> factor -> nat }
+-- (nat + nat) + nat
+-- = { apply all nat -> number }
+-- (2 + 3) + 4

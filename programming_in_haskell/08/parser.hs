@@ -100,3 +100,11 @@ eval xs = case parse expr xs of
 -- The library file also defines a parser int :: Parser Int for an integer. Without looking at this definition, define int.
 int :: Parser Int
 int = (symbol "-" >>>= const natural >>>= \n -> myreturn (-n)) +++ natural
+
+-- exercise 2
+-- Define a parser comment :: Parser () for ordinary Haskell comments that begin with the symbol -- and extend to the end of the current line, which is represented by the control character ’\n’.
+
+comment :: Parser ()
+comment = string "--" >>>= const (many (sat (/= '\n'))) >>>= const (sat (== '\n')) >>>= const (myreturn ())
+
+
