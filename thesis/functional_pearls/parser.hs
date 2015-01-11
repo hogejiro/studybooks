@@ -108,8 +108,8 @@ factor = digit +++ do symb "("
                       return n
 
 digit :: Parser Int
-digit = do x <- token (sat isDigit)
-           return (ord x - ord '0')
+digit = do cs <- token (many1 (sat isDigit))
+           return (read cs)
 
 addop :: Parser (Int -> Int -> Int)
 addop = do symb "+"
@@ -123,4 +123,4 @@ mulop = do symb "*"
            return (*)
         +++
         do symb "/"
-           return (div)
+           return div
