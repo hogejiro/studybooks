@@ -81,14 +81,26 @@ symbol xs = token (string xs)
 natural_list :: Parser [Int]
 natural_list = symbol "[" >>>= const natural >>>= \n -> (many (symbol "," >>>= const natural)) >>>= \ns -> symbol "]" >>>= const (myreturn (n:ns))
 
+-- exercise 6
+-- Extend the parser for arithmetic expressions to support subtraction and division, based upon the following extensions to the grammar
 expr :: Parser Int
-expr = term >>>= \t -> ((symbol "+" >>>= const expr >>>= \e -> myreturn (t + e))) +++ myreturn t
+expr = term >>>= \t -> (symbol "+" >>>= const expr >>>= \e -> myreturn (t + e)) +++
+                       (symbol "-" >>>= const expr >>>= \e -> myreturn (t - e)) +++
+                       myreturn t
 
 term :: Parser Int
-term = factor >>>= \f -> ((symbol "*" >>>= const term >>>= \t -> myreturn (f * t))) +++ myreturn f
+term = factor >>>= \f -> (symbol "*" >>>= const term >>>= \t -> myreturn (f   *   t)) +++
+                         (symbol "/" >>>= const term >>>= \t -> myreturn (f `div` t)) +++
+                         myreturn f
 
+-- exercise 7
+-- Further extend the grammar and parser for arithmetic expressions to support exponentiation, which is assumed to associate to the right and have higher priority than multiplication and division, but lower priority than parentheses and numbers.
 factor :: Parser Int
-factor = (symbol "(" >>>= const expr >>>= \e -> symbol ")" >>>= const (myreturn e)) +++ natural
+factor = unary >>>= \f -> (symbol "^" >>>= const term >>>= \t -> myreturn (f ^ t)) +++
+                          myreturn f
+
+unary :: Parser Int
+unary = (symbol "(" >>>= const expr >>>= \e -> symbol ")" >>>= const (myreturn e)) +++ natural
 
 eval :: String -> Int
 eval xs = case parse expr xs of
