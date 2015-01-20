@@ -152,9 +152,14 @@ delete :: String -> IO ()
 delete [] = calc ""
 delete xs = calc (init xs)
 
+-- exercise 2
+-- Modify the calculator program to indicate the approximate position of an error rather than just sounding a beep, by using the fact that the parser returns the unconsumed part of the input string.
 eval :: String -> IO ()
 eval xs = case parse expr xs of
-            [(n, [])] -> calc (show n)
+            [(n, [])] -> do writeat (2, 14) "                             "
+                            calc (show n)
+            [(_, vs)] -> do writeat (2, 14) ((map fst (zip vs [1..13])) ++ " is invalid input")
+                            calc xs
             _ -> do beep
                     calc xs
 
