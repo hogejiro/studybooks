@@ -78,3 +78,18 @@ wait n = seqn [return () | _ <- [1..n]]
 
 glider :: Board
 glider = [(4, 2), (2, 3), (4, 3), (3, 4), (4, 4)]
+
+-- exercise 3
+-- On some systems the game of life may flicker, due to the entire screen being cleared each generation. Modify the game to avoid such flicker by only redisplaying positions whose status changes.
+new_life_loop :: Board -> Board -> IO ()
+new_life_loop p b = do cls
+                       new_showcells p b
+                       wait 50000
+                       new_life_loop b (nextgen b)
+
+new_life :: Board -> IO ()
+new_life b = new_life_loop [] b
+
+new_showcells :: Board -> Board -> IO ()
+new_showcells p b = seqn ([writeat cell " " | cell <- p] ++
+                          [writeat cell "o" | cell <- b])
