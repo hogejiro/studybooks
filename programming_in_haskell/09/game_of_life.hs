@@ -93,3 +93,23 @@ new_life b = new_life_loop [] b
 new_showcells :: Board -> Board -> IO ()
 new_showcells p b = seqn ([writeat cell " " | cell <- p] ++
                           [writeat cell "o" | cell <- b])
+
+life_edit :: Board -> IO Board
+life_edit b = do cls
+                 writeat (1, height + 2) "e: edit, s: start"
+                 new_showcells [] b
+                 putChar '\n'
+                 putStr "> "
+                 cmd <- getLine
+                 case cmd of
+                    "e" -> do putStr "x :"
+                              x <- readLn :: IO Int
+                              putStr "y :"
+                              y <- readLn :: IO Int
+                              life_edit ((x, y) : b)
+                    "s" -> return b
+                    otherwise -> life_edit b
+
+new_life_edit :: IO ()
+new_life_edit = do b <- life_edit []
+                   new_life_loop [] b
