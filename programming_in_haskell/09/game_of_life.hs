@@ -94,6 +94,8 @@ new_showcells :: Board -> Board -> IO ()
 new_showcells p b = seqn ([writeat cell " " | cell <- p] ++
                           [writeat cell "o" | cell <- b])
 
+-- exercise 4
+-- Produce an editor that allows the user to interactively create and modify the content of the board in the game of life.
 life_edit :: Board -> IO Board
 life_edit b = do cls
                  writeat (1, height + 2) "e: edit, s: start"
