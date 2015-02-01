@@ -64,3 +64,35 @@ split :: [a] -> [([a], [a])]
 split []  = []
 split [_] = []
 split (x:xs) = ([x], xs) : [(x:ls, rs) | (ls, rs) <- split xs]
+
+exprs :: [Int] -> [Expr]
+exprs [] = []
+exprs [n] = [Val n]
+exprs ns = [e | (ls, rs) <- split ns,
+                l <- exprs ls,
+                r <- exprs rs,
+                e <- combine l r]
+
+combine :: Expr -> Expr -> [Expr]
+combine l r = [App o l r | o <- ops]
+
+ops :: [Op]
+ops = [Add, Sub, Mul, Div]
+
+-- Brute force solution
+solutions :: [Int] -> Int -> [Expr]
+solutions ns n = [e | ns' <- choices ns,
+                      e <- exprs ns',
+                      eval e == [n]]
+
+-- exercise 3
+-- What effect would generalising the function split to also return pairs containing the empty list have on the behaviour of solutions?
+-- infinite loop.
+
+-- exercise 4
+-- Using choices, exprs, and eval, verify that there are 33,665,406 possible expressions over the numbers 1, 3, 7, 10, 25, 50, and that only 4, 672, 540 of these expressions evaluate successfully.
+-- main = putStrLn $ show $ length [e | ns <- choices [1,3,7,10,25,50], e <- exprs ns]
+-- 33665406
+-- main = putStrLn $ show $ length [e | ns <- choices [1,3,7,10,25,50], e <- exprs ns, eval e /= []]
+-- 4672540
+
