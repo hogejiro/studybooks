@@ -35,10 +35,32 @@ interleave x (y:ys) = (x:y:ys) : map (y:) (interleave x ys)
 
 perms :: [a] -> [[a]]
 perms [] = [[]]
-perms (x:xs) = (concat (map (interleave x) (perms xs))
+perms (x:xs) = (concat (map (interleave x) (perms xs)))
 
 choices :: [a] -> [[a]]
 choices xs = (concat (map perms (subs xs)))
 
 solution :: Expr -> [Int] -> Int -> Bool
-solution e ns n = elem (values e) (choices ns) && eval e == n
+solution e ns n = elem (values e) (choices ns) && eval e == [n]
+
+-- exercise 1
+-- Redefine the combinatorial function choices using a list comprehension rather than the library functions concat and map.
+choices_comprehension :: [a] -> [[a]]
+choices_comprehension xs = [xs'' | xs' <- subs xs, xs'' <- perms xs']
+
+-- exercise 2
+-- Define a recursive function isChoice :: Eq a => [a] -> [a] -> Bool that decides if one list is chosen from another, without using the combinatorial functions perms and subs.
+removeOne :: Eq a => a -> [a] -> [a]
+removeOne x [] = []
+removeOne x (y:ys) | x == y    = ys
+                   | otherwise = y : removeOne x ys
+
+isChoice :: Eq a => [a] -> [a] -> Bool
+isChoice [] _      = True
+isChoice _  []     = False
+isChoice (x:xs) ys = elem x ys && isChoice xs (removeOne x ys)
+
+split :: [a] -> [([a], [a])]
+split []  = []
+split [_] = []
+split (x:xs) = ([x], xs) : [(x:ls, rs) | (ls, rs) <- split xs]
