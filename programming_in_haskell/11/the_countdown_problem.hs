@@ -1,4 +1,4 @@
-data Op = Add | Sub | Mul | Div
+data Op = Add | Sub | Mul | Div deriving (Eq, Show)
 
 valid :: Op -> Int -> Int -> Bool
 valid Add _ _ = True
@@ -12,7 +12,7 @@ apply Sub x y = x - y
 apply Mul x y = x * y
 apply Div x y = x `div` y
 
-data Expr = Val Int | App Op Expr Expr
+data Expr = Val Int | App Op Expr Expr deriving (Eq, Show)
 
 values :: Expr -> [Int]
 values (Val n) = [n]
@@ -103,3 +103,42 @@ solutions ns n = [e | ns' <- choices ns,
 -- main = putStrLn $ show $ length [e | ns <- choices [1,3,7,10,25,50], e <- exprs ns, eval e /= []]
 -- 10839369
 
+type Result = (Expr, Int)
+
+results :: [Int] -> [Result]
+results [] = []
+results [n] = [(Val n, n)]
+results ns = [e | (ls, rs) <- split ns,
+                  lx <- results ls,
+                  ry <- results rs,
+                  e <- combine' lx ry]
+
+combine' :: Result -> Result -> [Result]
+combine' (l, x) (r, y) = [(App o l r, apply o x y) | o <- ops, valid o x y]
+
+solutions' :: [Int] -> Int -> [Expr]
+solutions' ns n = [e | ns' <- choices ns,
+                       (e, m) <- results ns',
+                       m == n]
+
+valid' :: Op -> Int -> Int -> Bool
+valid' Add x y = x <= y
+valid' Sub x y = x > y
+valid' Mul x y = x /= 1 && y /= 1 && x <= y
+valid' Div x y = y /= 1 && x `mod` y == 0
+
+results' :: [Int] -> [Result]
+results' [] = []
+results' [n] = [(Val n, n)]
+results' ns = [e | (ls, rs) <- split ns,
+                   lx <- results ls,
+                   ry <- results rs,
+                   e <- combine'' lx ry]
+
+combine'' :: Result -> Result -> [Result]
+combine'' (l, x) (r, y) = [(App o l r, apply o x y) | o <- ops, valid' o x y]
+
+solutions'' :: [Int] -> Int -> [Expr]
+solutions'' ns n = [e | ns' <- choices ns,
+                        (e, m) <- results' ns',
+                        m == n]
