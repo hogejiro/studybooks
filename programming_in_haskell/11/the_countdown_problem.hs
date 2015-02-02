@@ -96,3 +96,10 @@ solutions ns n = [e | ns' <- choices ns,
 -- main = putStrLn $ show $ length [e | ns <- choices [1,3,7,10,25,50], e <- exprs ns, eval e /= []]
 -- 4672540
 
+-- exercise 5
+-- Similarly, verify that the number of expressions that evaluate successfully increases to 10,839,369 if the numeric domain is generalised to arbitrary integers.
+-- valid Sub x y = True
+-- valid Mul x y = y /= 0 && x `mod` y == 0
+-- main = putStrLn $ show $ length [e | ns <- choices [1,3,7,10,25,50], e <- exprs ns, eval e /= []]
+-- 10839369
+
