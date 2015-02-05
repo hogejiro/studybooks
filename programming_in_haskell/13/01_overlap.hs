@@ -1,0 +1,2 @@
+-- toUpper, toLower, takeWhile, dropWhile (using otherwise = True)
+-- last, init
