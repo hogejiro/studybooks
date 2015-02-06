@@ -1,0 +1,33 @@
+-- xs ++ [] = xs
+--
+-- Base case:
+--  [] ++ []
+--  = { applying ++ }
+--  []
+--
+-- Inductive case:
+--  (x : xs) ++ []
+--  = { applying ++ }
+--  x : (xs ++ [])
+--  = { induction hypothesis }
+--  x : xs
+
+-- xs ++ (ys ++ zs)
+--
+-- Base case:
+--  [] ++ (ys ++ zs)
+--  = { applying the first ++ }
+--  ys ++ zs
+--  = { unapplying ++ }
+--  ([] ++ ys) ++ zs
+--
+-- Indutive case:
+--  (x : xs) ++ (ys ++ zs)
+--  = { applying the first ++ }
+--  x : (xs ++ (ys ++ zs))
+--  = { induction hypothesis }
+--  x : ((xs ++ ys) ++ zs)
+--  = { unapplying the first ++ }
+--  (x : (xs ++ ys)) ++ zs
+--  = { unapplying the first ++ }
+--  ((x : xs) ++ ys) ++ zs

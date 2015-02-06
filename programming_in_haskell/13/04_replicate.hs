@@ -1,0 +1,24 @@
+-- all p [] = True
+-- all p (x:xs) = p x && all xs
+--
+-- all (== x) (replicate n x)
+--
+-- Base case:
+--  all (== x) (replicate 0 x)
+--  = { applying replicate }
+--  all (== x) []
+--  = { applying all }
+--  True
+--
+-- Inductive case:
+--  all (== x) (replicate (n + 1) x)
+--  = { applying replicate }
+--  all (== x) (x : (replicate n x))
+--  = { applying all }
+--  (== x) x && all (== x) (replicate n x)
+--  = { applying the first (== x) }
+--  True && all (== x) (replicate n x)
+--  = { applying && }
+--  all (== x) (replicate n x)
+--  = { induction hypothesis }
+--  True
