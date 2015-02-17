@@ -13,8 +13,10 @@ dispatch command  = doesntExist command
 
 main :: IO ()
 main = do
-    (command:argList) <- getArgs
-    dispatch command argList
+    args <- getArgs
+    case args of
+        []                -> putStrLn "nothing inputs"
+        (command:argList) -> dispatch command argList
 
 add :: [String] -> IO ()
 add [fileName, todoItem] = appendFile fileName (todoItem ++ "\n")
