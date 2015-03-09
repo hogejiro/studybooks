@@ -23,13 +23,13 @@ step xs w = do--(as, i, p, k)
         a = llcp xs (drop k xs)
         b = q + llcp (drop q xs) (drop (q + k) xs)
     if k >= i + p then do
-        --tell ["k:" ++ show k ++ ", i: " ++ show i ++ ", p: " ++ show p]
+        tell ["k:" ++ show k ++ ", i: " ++ show i ++ ", p: " ++ show p]
         return (snoc as         a, k, a, k + 1)
     else if q /= r then do
-        --tell ["q:" ++ show q ++ ", r: " ++ show r]
+        tell ["eq! q:" ++ show q ++ ", r: " ++ show r]
         return (snoc as (min q r), i, p, k + 1)
     else do
-        --tell ["q:" ++ show q ++ ", r: " ++ show r]
+        tell ["neq! q:" ++ show q ++ ", r: " ++ show r]
         return (snoc as         b, k, b, k + 1)
 
 fst4 (a, b, c, d) = a
