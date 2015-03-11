@@ -7,16 +7,12 @@ untilW b f w = do
     wr <- (b w)
     if wr then w else untilW b f (f w)
 
---done n (as, i, p, k) = k == n
-
-first  (a, b, c, d) = a
-fourth (a, b, c, d) = d
 done n w = do
     (as, i, p, k) <- w
     tell ["iter " ++ show k ++ ":" ++ show (as, i, p)]
     return (k == n)
 
-step xs w = do--(as, i, p, k)
+step xs w = do
     (as, i, p, k) <- w
     let q = as !! (k - i)
         r = p - (k - i)
