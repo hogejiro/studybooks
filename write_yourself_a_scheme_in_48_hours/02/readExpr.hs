@@ -21,6 +21,7 @@ data LispVal = Atom String
             | Number Integer
             | String String
             | Bool Bool deriving (Show)
+            | Character Char
 
 -- Exercise2
 -- Exercise3
@@ -107,11 +108,21 @@ parseBool = do
         't' -> Bool True
         'f' -> Bool False
 
+parseCharacter :: Parser LispVal
+parseCharacter = do
+    try string "#\\"
+    char <- try (string "newline" <|> string "space") <|> do { x <- anyChar; notFollowedBy alphaNum; return [x] }
+    return $ Character $ case char of
+        "space"   -> ''
+        "newline" -> '\n'
+        otherwise -> (char !! 0)
+
 parseExpr :: Parser LispVal
 parseExpr = parseAtom
         <|> parseString
         <|> parseNumber
         <|> parseBool
+        <|> parseCharacter
 
 main :: IO ()
 main = do args <- getArgs
