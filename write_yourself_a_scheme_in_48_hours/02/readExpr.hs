@@ -50,10 +50,10 @@ parseAtom = do
 
 parseFloat :: Parser LispVal
 parseFloat = do
-    x <- many1 digit
+    integerPart <- many1 digit
     char '.'
-    y <- many1 digit
-    return $ Float (fst . head $ readFloat (x ++ "." ++ y))
+    fractionalPart <- many1 digit
+    return $ Float (fst . head $ readFloat (integerPart ++ "." ++ fractionalPart))
 
 -- Exercise 4
 parseNumber :: Parser LispVal
