@@ -19,6 +19,7 @@ data LispVal = Atom String
             |  List [LispVal]
             | DottedList [LispVal] LispVal
             | Number Integer
+            | Float Double
             | String String
             | Bool Bool
             | Character Char
@@ -46,6 +47,13 @@ parseAtom = do
     first <- letter <|> symbol
     rest  <- many (letter <|> digit <|> symbol)
     return $ Atom (first:rest)
+
+parseFloat :: Parser LispVal
+parseFloat = do
+    x <- many1 digit
+    char '.'
+    y <- many1 digit
+    return $ Float (fst . head $ readFloat (x ++ "." ++ y))
 
 -- Exercise 4
 parseNumber :: Parser LispVal
@@ -121,6 +129,7 @@ parseCharacter = do
 parseExpr :: Parser LispVal
 parseExpr = parseAtom
         <|> parseString
+        <|> try parseFloat
         <|> parseNumber
         <|> parseBool
         <|> parseCharacter
