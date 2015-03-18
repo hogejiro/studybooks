@@ -20,8 +20,9 @@ data LispVal = Atom String
             | DottedList [LispVal] LispVal
             | Number Integer
             | String String
-            | Bool Bool deriving (Show)
+            | Bool Bool
             | Character Char
+        deriving (Show)
 
 -- Exercise2
 -- Exercise3
@@ -110,12 +111,14 @@ parseBool = do
 
 parseCharacter :: Parser LispVal
 parseCharacter = do
-    try string "#\\"
-    char <- try (string "newline" <|> string "space") <|> do { x <- anyChar; notFollowedBy alphaNum; return [x] }
-    return $ Character $ case char of
-        "space"   -> ''
-        "newline" -> '\n'
-        otherwise -> (char !! 0)
+    ch <- try $ string "#\\"
+    case ch of
+        "" -> return $ Character ' '
+        _  -> char <- try (string "newline" <|> string "space") <|> do { x <- anyChar; notFollowedBy alphaNum; return [x] }
+              return $ Character $ case char of
+                  "space"   -> ' '
+                  "newline" -> '\n'
+                  _         -> (char !! 0)
 
 parseExpr :: Parser LispVal
 parseExpr = parseAtom
