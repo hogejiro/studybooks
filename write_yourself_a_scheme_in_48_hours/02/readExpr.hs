@@ -111,14 +111,12 @@ parseBool = do
 
 parseCharacter :: Parser LispVal
 parseCharacter = do
-    ch <- try $ string "#\\"
-    case ch of
-        "" -> return $ Character ' '
-        _  -> char <- try (string "newline" <|> string "space") <|> do { x <- anyChar; notFollowedBy alphaNum; return [x] }
-              return $ Character $ case char of
-                  "space"   -> ' '
-                  "newline" -> '\n'
-                  _         -> (char !! 0)
+    try $ string "#\\"
+    char <- try (string "newline" <|> string "space") <|> do { x <- anyChar; notFollowedBy alphaNum; return [x] }
+    return $ Character $ case char of
+        "space"   -> ' '
+        "newline" -> '\n'
+        _         -> (char !! 0)
 
 parseExpr :: Parser LispVal
 parseExpr = parseAtom
