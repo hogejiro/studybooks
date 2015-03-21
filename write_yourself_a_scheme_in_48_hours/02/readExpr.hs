@@ -3,6 +3,8 @@ import System.Environment
 import Control.Monad
 import Numeric
 import Data.Char
+import Data.Ratio
+import Data.Complex
 
 symbol :: Parser Char
 symbol = oneOf "!$%&|*+-/:<=>?@^_~"
@@ -23,10 +25,12 @@ data LispVal = Atom String
             | String String
             | Bool Bool
             | Character Char
+            | Ratio Rational
+            | Complex (Complex Double)
         deriving (Show)
 
--- Exercise2
--- Exercise3
+-- Exercise 2-2
+-- Exercise 2-3
 escapedChars :: Parser Char
 escapedChars = do c <- char '\\' >> oneOf "\\\"nrt"
                   return $ case c of
@@ -48,6 +52,20 @@ parseAtom = do
     rest  <- many (letter <|> digit <|> symbol)
     return $ Atom (first:rest)
 
+-- Exercise 2-7
+parseComplex :: Parser LispVal
+parseComplex = do
+    realPart <- try parseFloat <|> parseNumber
+    spaces
+    char '+'
+    spaces
+    imagPart <- try parseFloat <|> parseNumber
+    char 'i'
+    return $ Complex ((toDouble realPart) :+ (toDouble imagPart))
+        where toDouble (Float  f) = f
+              toDouble (Number n) = fromIntegral n
+
+-- Exercise 2-6
 parseFloat :: Parser LispVal
 parseFloat = do
     integerPart <- many1 digit
@@ -55,7 +73,17 @@ parseFloat = do
     fractionalPart <- many1 digit
     return $ Float (fst . head $ readFloat (integerPart ++ "." ++ fractionalPart))
 
--- Exercise 4
+-- Exercise 2-7
+parseRational :: Parser LispVal
+parseRational = do
+    numerator <- many1 digit
+    spaces
+    char '/'
+    spaces
+    denominator <- many1 digit
+    return $ Ratio ((read numerator) % (read denominator))
+
+-- Exercise 2-4
 parseNumber :: Parser LispVal
 parseNumber = do
     num <- parseInt <|> parseDecimal <|> parseHex <|> parseOct <|> parseBin
@@ -98,7 +126,7 @@ bin2dig bs = toInteger $ foldr (\x y -> x + y * 2) 0 (map c2i bs)
             where c2i n = ord n - 48
 
 {--
--- Exercise1
+-- Exercise 2-1
 
 parseNumber :: Parser LispVal
 parseNumber = do
@@ -117,6 +145,7 @@ parseBool = do
         't' -> Bool True
         'f' -> Bool False
 
+-- Exercise 2-5
 parseCharacter :: Parser LispVal
 parseCharacter = do
     try $ string "#\\"
@@ -129,10 +158,12 @@ parseCharacter = do
 parseExpr :: Parser LispVal
 parseExpr = parseAtom
         <|> parseString
+        <|> try parseComplex
         <|> try parseFloat
-        <|> parseNumber
-        <|> parseBool
-        <|> parseCharacter
+        <|> try parseRational
+        <|> try parseNumber
+        <|> try parseBool
+        <|> try parseCharacter
 
 main :: IO ()
 main = do args <- getArgs
