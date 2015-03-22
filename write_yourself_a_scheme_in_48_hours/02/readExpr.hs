@@ -1,4 +1,4 @@
-import Text.ParserCombinators.Parsec hiding (spaces)
+import Text.ParserCombinators.Parsec
 import System.Environment
 import Control.Monad
 import Numeric
@@ -10,8 +10,8 @@ import Data.Array
 symbol :: Parser Char
 symbol = oneOf "!$%&|*+-/:<=>?@^_~"
 
-spaces :: Parser ()
-spaces = skipMany1 space
+spaces1 :: Parser ()
+spaces1 = skipMany1 space
 
 readExpr :: String -> String
 readExpr input = case parse parseExpr "lisp" input of
@@ -176,14 +176,15 @@ parseVector = do arrayValues <- sepBy parseExpr spaces
                  return $ Vector (listArray (0, (length arrayValues - 1)) arrayValues)
 
 parseList :: Parser LispVal
-parseList = liftM List $ sepBy parseExpr spaces
-
-parseDottedList :: Parser LispVal
-parseDottedList = do
-    head <- endBy parseExpr spaces
-    char '.' >> spaces
-    tail <- parseExpr
-    return $ DottedList head tail
+parseList = do
+    char '(' >> spaces
+    head <- parseExpr `sepEndBy` spaces1
+    do char '.' >> spaces1
+       tail <- parseExpr
+       spaces >> char ')'
+       return $ DottedList head tail
+       <|> do spaces >> char ')'
+              return $ List head
 
 parseExpr :: Parser LispVal
 parseExpr = parseAtom
@@ -201,10 +202,7 @@ parseExpr = parseAtom
                     vector <- parseVector
                     char ')'
                     return vector)
-        <|> do char '('
-               list <- try parseList <|> parseDottedList
-               char ')'
-               return list
+        <|> try parseList
 
 main :: IO ()
 main = do args <- getArgs
