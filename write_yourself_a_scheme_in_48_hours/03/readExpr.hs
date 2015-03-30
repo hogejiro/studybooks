@@ -199,11 +199,11 @@ parseExpr = parseAtom
         <|> try parseList
 
 eval :: LispVal -> LispVal
-eval val@(String _) = val
-eval val@(Number _) = val
-eval val@(Bool   _) = val
+eval val @ (String _) = val
+eval val @ (Number _) = val
+eval val @ (Bool   _) = val
 eval (List [Atom "quote", val]) = val
-eval (List (Atom func : args)) = apply func $ map eval args
+eval (List (Atom func : args))  = apply func $ map eval args
 
 apply :: String -> [LispVal] -> LispVal
 apply func args = maybe (Bool False) ($ args) $ lookup func primitives
@@ -215,7 +215,8 @@ primitives = [("+",         numericBinop (+)),
               ("/",         numericBinop div),
               ("mod",       numericBinop mod),
               ("quotient",  numericBinop quot),
-              ("remainder", numericBinop rem)]
+              ("remainder", numericBinop rem),
+              ("atom?",     unaryOp      isAtom)]
 
 numericBinop :: (Integer -> Integer -> Integer) -> [LispVal] -> LispVal
 numericBinop op params = Number $ foldl1 op $ map unpackNum params
@@ -228,6 +229,13 @@ unpackNum (String n) = let parsed = reads n in
                             else fst $ parsed !! 0
 unpackNum (List [n]) = unpackNum n
 unpackNum _ = 0
+
+unaryOp :: (LispVal -> LispVal) -> [LispVal] -> LispVal
+unaryOp f [v] = f v
+
+isAtom :: LispVal -> LispVal
+isAtom (Atom _) = Bool True
+isAtom _ = Bool False
 
 main :: IO ()
 main = getArgs >>= print . eval . readExpr . head
