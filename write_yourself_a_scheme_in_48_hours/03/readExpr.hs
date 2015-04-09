@@ -216,7 +216,8 @@ primitives = [("+",         numericBinop (+)),
               ("mod",       numericBinop mod),
               ("quotient",  numericBinop quot),
               ("remainder", numericBinop rem),
-              ("atom?",     unaryOp      isAtom)]
+              ("atom?",     unaryOp isAtom),
+              ("string?",   unaryOp isString)]
 
 numericBinop :: (Integer -> Integer -> Integer) -> [LispVal] -> LispVal
 numericBinop op params = Number $ foldl1 op $ map unpackNum params
@@ -235,7 +236,11 @@ unaryOp f [v] = f v
 
 isAtom :: LispVal -> LispVal
 isAtom (Atom _) = Bool True
-isAtom _ = Bool False
+isAtom _        = Bool False
+
+isString :: LispVal -> LispVal
+isString (String _) = Bool True
+isString _          = Bool False
 
 main :: IO ()
 main = getArgs >>= print . eval . readExpr . head
