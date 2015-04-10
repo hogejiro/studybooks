@@ -2,7 +2,7 @@ import Text.ParserCombinators.Parsec
 import System.Environment
 import Control.Monad
 import Numeric
-import Data.Char
+import Data.Char hiding (isNumber)
 import Data.Ratio
 import Data.Complex
 import Data.Array
@@ -217,7 +217,8 @@ primitives = [("+",         numericBinop (+)),
               ("quotient",  numericBinop quot),
               ("remainder", numericBinop rem),
               ("atom?",     unaryOp isAtom),
-              ("string?",   unaryOp isString)]
+              ("string?",   unaryOp isString)
+              ("number?",   unaryOp isNumber)]
 
 numericBinop :: (Integer -> Integer -> Integer) -> [LispVal] -> LispVal
 numericBinop op params = Number $ foldl1 op $ map unpackNum params
@@ -241,6 +242,10 @@ isAtom _        = Bool False
 isString :: LispVal -> LispVal
 isString (String _) = Bool True
 isString _          = Bool False
+
+isNumber :: LispVal -> LispVal
+isNumber (Number _) = Bool True
+isNumber _          = Bool False
 
 main :: IO ()
 main = getArgs >>= print . eval . readExpr . head
