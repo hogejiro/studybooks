@@ -217,7 +217,7 @@ primitives = [("+",         numericBinop (+)),
               ("quotient",  numericBinop quot),
               ("remainder", numericBinop rem),
               ("atom?",     unaryOp isAtom),
-              ("string?",   unaryOp isString)
+              ("string?",   unaryOp isString),
               ("number?",   unaryOp isNumber)]
 
 numericBinop :: (Integer -> Integer -> Integer) -> [LispVal] -> LispVal
