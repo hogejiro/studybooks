@@ -209,16 +209,20 @@ apply :: String -> [LispVal] -> LispVal
 apply func args = maybe (Bool False) ($ args) $ lookup func primitives
 
 primitives :: [(String, [LispVal] -> LispVal)]
-primitives = [("+",         numericBinop (+)),
-              ("-",         numericBinop (-)),
-              ("*",         numericBinop (*)),
-              ("/",         numericBinop div),
-              ("mod",       numericBinop mod),
-              ("quotient",  numericBinop quot),
-              ("remainder", numericBinop rem),
-              ("atom?",     unaryOp isAtom),
-              ("string?",   unaryOp isString),
-              ("number?",   unaryOp isNumber)]
+primitives = [("+",              numericBinop (+)),
+              ("-",              numericBinop (-)),
+              ("*",              numericBinop (*)),
+              ("/",              numericBinop div),
+              ("mod",            numericBinop mod),
+              ("quotient",       numericBinop quot),
+              ("remainder",      numericBinop rem),
+              ("atom?",          unaryOp isAtom),
+              ("string?",        unaryOp isString),
+              ("number?",        unaryOp isNumber),
+              ("bool?",          unaryOp isBool),
+              ("list?",          unaryOp isLisp),
+              ("symbol->string", unaryOp symbol2string),
+              ("string->symbol", unaryOp string2symbol)]
 
 numericBinop :: (Integer -> Integer -> Integer) -> [LispVal] -> LispVal
 numericBinop op params = Number $ foldl1 op $ map unpackNum params
@@ -246,6 +250,23 @@ isString _          = Bool False
 isNumber :: LispVal -> LispVal
 isNumber (Number _) = Bool True
 isNumber _          = Bool False
+
+isBool :: LispVal -> LispVal
+isBool (Bool _) = Bool True
+isBool _        = Bool False
+
+isList :: LispVal -> LispVal
+isList (List _)       = Bool True
+isList (DottedList _) = Bool True
+isList _              = Bool False
+
+symbol2string :: LispVal -> LispVal
+symbol2string (Atom s) = String s
+symbol2string _        = String ""
+
+string2symbol :: LispVal -> LispVal
+string2symbol (String s) = Atom s
+string2symbol _          = Atom ""
 
 main :: IO ()
 main = getArgs >>= print . eval . readExpr . head
