@@ -6,6 +6,7 @@ import Data.Char hiding (isNumber)
 import Data.Ratio
 import Data.Complex
 import Data.Array
+import Control.Monad.Error
 
 symbol :: Parser Char
 symbol = oneOf "!$%&|*+-/:<=>?@^_~"
@@ -220,7 +221,7 @@ primitives = [("+",              numericBinop (+)),
               ("string?",        unaryOp isString),
               ("number?",        unaryOp isNumber),
               ("bool?",          unaryOp isBool),
-              ("list?",          unaryOp isLisp),
+              ("list?",          unaryOp isList),
               ("symbol->string", unaryOp symbol2string),
               ("string->symbol", unaryOp string2symbol)]
 
@@ -256,9 +257,9 @@ isBool (Bool _) = Bool True
 isBool _        = Bool False
 
 isList :: LispVal -> LispVal
-isList (List _)       = Bool True
-isList (DottedList _) = Bool True
-isList _              = Bool False
+isList (List _)         = Bool True
+isList (DottedList _ _) = Bool True
+isList _                = Bool False
 
 symbol2string :: LispVal -> LispVal
 symbol2string (Atom s) = String s
@@ -267,6 +268,34 @@ symbol2string _        = String ""
 string2symbol :: LispVal -> LispVal
 string2symbol (String s) = Atom s
 string2symbol _          = Atom ""
+
+data LispError = NumArgs        Integer [LispVal]
+               | TypeMismatch   String LispVal
+               | Parser         ParseError
+               | BadSpecialForm String LispVal
+               | NotFunction    String String
+               | UnboundVar     String String
+               | Default        String
+
+showError :: LispError -> String
+showError (NumArgs        expected found)   = "Expected" ++ show expected ++ "args: found values " ++ unwordsList found
+showError (TypeMismatch   expected found)   = "Invalid type: expected " ++ expected ++ ", found " ++ show found
+showError (Parser         parseErr)         = "Parse error at " ++ show parseErr
+showError (BadSpecialForm message  form)    = message ++ ": " ++ show form
+showError (NotFunction    message  func)    = message ++ ": " ++ show func
+showError (UnboundVar     message  varname) = message ++ ": " ++ varname
+
+instance Show LispError where show = showError
+
+instance Error LispError where
+    noMsg  = Default "An error has occured"
+    strMsg = Default
+
+type ThrowsError = Either LispError
+
+trapError action = catchError action (return . show)
+
+
 
 main :: IO ()
 main = getArgs >>= print . eval . readExpr . head
