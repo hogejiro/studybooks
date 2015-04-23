@@ -380,11 +380,7 @@ eqv [(Number arg1), (Number arg2)] = return $ Bool $ arg1 == arg2
 eqv [(String arg1), (String arg2)] = return $ Bool $ arg1 == arg2
 eqv [(Atom   arg1), (Atom   arg2)] = return $ Bool $ arg1 == arg2
 eqv [(DottedList xs x), (DottedList ys y)] = eqv [List $ xs ++ [x], List $ ys ++ [y]]
-eqv [(List arg1), (List arg2)]             = return $ Bool $ (length arg1 == length arg2) && (all eqvPair $ zip arg1 arg2)
-    where
-        eqvPair (x1, x2) = case eqv [x1, x2] of
-                            Left  err        -> False
-                            Right (Bool val) -> val
+eqv [(List arg1), (List arg2)]             = return $ Bool $ (length arg1 == length arg2) && (all (eqFuncPair eqv) $ zip arg1 arg2)
 eqv [_, _] = return $ Bool False
 eqv badArgList = throwError $ NumArgs 2 badArgList
 
@@ -398,11 +394,17 @@ unpackEquals arg1 arg2 (AnyUnpacker unpacker) =
     `catchError` (const $ return False)
 
 equal :: [LispVal] -> ThrowsError LispVal
+equal [(List arg1), (List arg2)] = return $ Bool $ (length arg1 == length arg2) && (all (eqFuncPair equal) $ zip arg1 arg2)
 equal [arg1, arg2] = do
     primitiveEquals <- liftM or $ mapM (unpackEquals arg1 arg2) [AnyUnpacker unpackNum, AnyUnpacker unpackStr, AnyUnpacker unpackBool]
     eqvEquals  <- eqv [arg1, arg2]
     return $ Bool $ (primitiveEquals || let (Bool x) = eqvEquals in x)
 equal badArgList = throwError $ NumArgs 2 badArgList
+
+eqFuncPair :: ([LispVal] -> ThrowsError LispVal) -> (LispVal, LispVal) -> Bool
+eqFuncPair eqFunc (x1, x2)  = case eqFunc [x1, x2] of
+    Left  err        -> False
+    Right (Bool val) -> val
 
 main :: IO ()
 main = do
