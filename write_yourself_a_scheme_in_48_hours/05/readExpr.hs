@@ -210,6 +210,19 @@ eval (List [Atom "if", pred, conseq, alt]) =
         Bool False -> eval alt
         Bool True  -> eval conseq
         _          -> throwError $ TypeMismatch "bool" pred
+eval (List ((Atom "cond"):cs)) =
+    do b <- (liftM (take 1 . dropWhile f) $ mapM condClause cs) >>= cdr
+       car [b] >>= eval
+        where
+            condClause (List [p, b]) = do q <- eval p
+                                          case q of
+                                            Bool _ -> return $ List [q, b]
+                                            _      -> throwError $ TypeMismatch "bool" q
+            condClause v             = throwError $ TypeMismatch "(pred body)" v
+            f                        = \(List [p, b]) -> case p of
+                                                            (Bool False) -> True
+                                                            _            -> False
+
 eval (List (Atom func : args))  = mapM eval args >>= apply func
 eval badForm = throwError $ BadSpecialForm "Unrecognized special form" badForm
 
@@ -380,7 +393,7 @@ eqv [(Number arg1), (Number arg2)] = return $ Bool $ arg1 == arg2
 eqv [(String arg1), (String arg2)] = return $ Bool $ arg1 == arg2
 eqv [(Atom   arg1), (Atom   arg2)] = return $ Bool $ arg1 == arg2
 eqv [(DottedList xs x), (DottedList ys y)] = eqv [List $ xs ++ [x], List $ ys ++ [y]]
-eqv [(List arg1), (List arg2)]             = return $ Bool $ (length arg1 == length arg2) && (all (eqFuncPair eqv) $ zip arg1 arg2)
+eqv [(List arg1), (List arg2)]             = return $ Bool $ (length arg1 == length arg2) && (all eqvPair $ zip arg1 arg2)
 eqv [_, _] = return $ Bool False
 eqv badArgList = throwError $ NumArgs 2 badArgList
 
@@ -394,7 +407,7 @@ unpackEquals arg1 arg2 (AnyUnpacker unpacker) =
     `catchError` (const $ return False)
 
 equal :: [LispVal] -> ThrowsError LispVal
-equal [(List arg1), (List arg2)] = return $ Bool $ (length arg1 == length arg2) && (all (eqFuncPair equal) $ zip arg1 arg2)
+equal [(List arg1), (List arg2)] = return $ Bool $ (length arg1 == length arg2) && (all equalPair $ zip arg1 arg2)
 equal [arg1, arg2] = do
     primitiveEquals <- liftM or $ mapM (unpackEquals arg1 arg2) [AnyUnpacker unpackNum, AnyUnpacker unpackStr, AnyUnpacker unpackBool]
     eqvEquals  <- eqv [arg1, arg2]
@@ -405,6 +418,12 @@ eqFuncPair :: ([LispVal] -> ThrowsError LispVal) -> (LispVal, LispVal) -> Bool
 eqFuncPair eqFunc (x1, x2)  = case eqFunc [x1, x2] of
     Left  err        -> False
     Right (Bool val) -> val
+
+eqvPair :: (LispVal, LispVal) -> Bool
+eqvPair = eqFuncPair eqv
+
+equalPair :: (LispVal, LispVal) -> Bool
+equalPair = eqFuncPair equal
 
 main :: IO ()
 main = do
