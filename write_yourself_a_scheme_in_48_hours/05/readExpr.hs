@@ -210,19 +210,13 @@ eval (List [Atom "if", pred, conseq, alt]) =
         Bool False -> eval alt
         Bool True  -> eval conseq
         _          -> throwError $ TypeMismatch "bool" pred
-eval (List ((Atom "cond"):cs)) =
-    do b <- (liftM (take 1 . dropWhile f) $ mapM condClause cs) >>= cdr
-       car [b] >>= eval
-        where
-            condClause (List [p, b]) = do q <- eval p
-                                          case q of
-                                            Bool _ -> return $ List [q, b]
-                                            _      -> throwError $ TypeMismatch "bool" q
-            condClause v             = throwError $ TypeMismatch "(pred body)" v
-            f                        = \(List [p, b]) -> case p of
-                                                            (Bool False) -> True
-                                                            _            -> False
-
+eval form @ (List (Atom "cond" : clauses)) =
+    if null clauses
+        then throwError $ BadSpecialForm "no true clause in cond expression: " form
+        else case head clauses of
+            List [Atom "else", expr] -> eval expr
+            List [pred, expr]        -> eval $ List [Atom "if", pred, expr, List (Atom "cond" : tail clauses)]
+            _                        -> throwError $ BadSpecialForm "ill-formed cond expression: " form
 eval (List (Atom func : args))  = mapM eval args >>= apply func
 eval badForm = throwError $ BadSpecialForm "Unrecognized special form" badForm
 
@@ -346,7 +340,7 @@ data LispError = NumArgs        Integer [LispVal]
                | Default        String
 
 showError :: LispError -> String
-showError (NumArgs        expected found)   = "Expected" ++ show expected ++ "args: found values " ++ unwordsList found
+showError (NumArgs        expected found)   = "Expected " ++ show expected ++ " args: found values " ++ unwordsList found
 showError (TypeMismatch   expected found)   = "Invalid type: expected " ++ expected ++ ", found " ++ show found
 showError (Parser         parseErr)         = "Parse error at " ++ show parseErr
 showError (BadSpecialForm message  form)    = message ++ ": " ++ show form
