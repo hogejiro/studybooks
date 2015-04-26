@@ -20,16 +20,17 @@ readExpr input = case parse parseExpr "lisp" input of
     Right val -> return val
 
 data LispVal = Atom String
-            | Vector (Array Int LispVal)
-            | List [LispVal]
-            | DottedList [LispVal] LispVal
-            | Number Integer
-            | Float Double
-            | String String
-            | Bool Bool
-            | Character Char
-            | Ratio Rational
-            | Complex (Complex Double)
+             | Vector (Array Int LispVal)
+             | List [LispVal]
+             | DottedList [LispVal] LispVal
+             | Number Integer
+             | Float Double
+             | String String
+             | Bool Bool
+             | Character Char
+             | Ratio Rational
+             | Complex (Complex Double)
+    deriving (Eq)
 
 showVal :: LispVal -> String
 showVal (List contents)        = "(" ++ unwordsList contents ++ ")"
@@ -217,6 +218,18 @@ eval form @ (List (Atom "cond" : clauses)) =
             List [Atom "else", expr] -> eval expr
             List [pred, expr]        -> eval $ List [Atom "if", pred, expr, List (Atom "cond" : tail clauses)]
             _                        -> throwError $ BadSpecialForm "ill-formed cond expression: " form
+eval form @ (List (Atom "case" : key : clauses)) =
+    if null clauses
+        then throwError $ BadSpecialForm "no true clause in case expression: " form
+        else case head clauses of
+            List (Atom "else" : exprs) -> mapM eval exprs >>= return . last
+            List ((List datums) : exprs) -> do
+                result <- eval key
+                equality <- mapM (\x -> eqv [result, x]) datums
+                if (Bool True) `elem` equality
+                    then mapM eval exprs >>= return . last
+                    else eval $ List (Atom "case" : key : tail clauses)
+            _ -> throwError $ BadSpecialForm "ill-formed case expression: " form
 eval (List (Atom func : args))  = mapM eval args >>= apply func
 eval badForm = throwError $ BadSpecialForm "Unrecognized special form" badForm
 
