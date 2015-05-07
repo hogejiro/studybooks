@@ -8,6 +8,7 @@ import Data.Complex
 import Data.Array
 import Control.Monad.Error
 import System.IO
+import Data.IORef
 
 symbol :: Parser Char
 symbol = oneOf "!$%&|*+-/:<=>?@^_~"
@@ -454,6 +455,11 @@ until_ pred prompt action = do
 
 runRepl :: IO ()
 runRepl = until_ (== "quit") (readPrompt "Lisp>>> ") evalAndPrint
+
+type Env = IORef [(String, IORef LispVal)]
+
+nullEnv :: IO Env
+nullEnv = newIORef []
 
 main :: IO ()
 main = do args <- getArgs
