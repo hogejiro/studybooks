@@ -461,6 +461,8 @@ type Env = IORef [(String, IORef LispVal)]
 nullEnv :: IO Env
 nullEnv = newIORef []
 
+type IOThrowsError = ErrorT LispError IO
+
 main :: IO ()
 main = do args <- getArgs
           case length args of
