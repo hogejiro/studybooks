@@ -463,6 +463,13 @@ nullEnv = newIORef []
 
 type IOThrowsError = ErrorT LispError IO
 
+liftThrows :: ThrowsError a -> IOThrowsError a
+liftThrows (Left err)  = throwError err
+liftThrows (Right val) = return val
+
+runIOThrows :: IOThrowsError String -> IO String
+runIOThrows action = runErrorT (trapError action) >>= return . extractValue
+
 main :: IO ()
 main = do args <- getArgs
           case length args of
