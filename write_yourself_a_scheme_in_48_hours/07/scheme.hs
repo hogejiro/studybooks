@@ -473,6 +473,19 @@ runIOThrows action = runErrorT (trapError action) >>= return . extractValue
 isBound :: Env -> String -> IO Bool
 isBound envRef var = readIORef envRef >>= return . maybe False (const True) . lookup var
 
+getVar :: Env -> String -> IOThrowsError LispVal
+getVar envRef var = do env <- liftIO $ readIORef envRef
+                       maybe (throwError $ UnboundVar "Getting an unbound variable: " var)
+                             (liftIO . readIORef)
+                             (lookup var env)
+
+setVar :: Env -> String -> LispVal -> IOThrowsError LispVal
+setVar envRef var value = do env <- liftIO $ readIORef envRef
+                             maybe (throwError $ UnboundVar "Setting an unbound variable: " var)
+                                   (liftIO . (flip writeIORef value))
+                                   (lookup var env)
+                             return value
+
 main :: IO ()
 main = do args <- getArgs
           case length args of
