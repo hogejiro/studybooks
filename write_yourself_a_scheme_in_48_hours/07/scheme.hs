@@ -486,6 +486,23 @@ setVar envRef var value = do env <- liftIO $ readIORef envRef
                                    (lookup var env)
                              return value
 
+defineVar :: Env -> String -> LispVal -> IOThrowsError LispVal
+defineVar envRef var value = do
+    alreadyDefined <- liftIO $ isBound envRef var
+    if alreadyDefined
+        then setVar envRef var value >> return value
+        else liftIO $ do
+            valueRef <- newIORef value
+            env <- readIORef envRef
+            writeIORef envRef ((var, valueRef) : env)
+            return value
+
+bindVars :: Env -> [(String, LispVal)] -> IO Env
+bindVars envRef bindings = readIORef envRef >>= extendEnv bindings >>= newIORef
+    where extendEnv bindings env = liftM (++ env) (mapM addBinding bindings)
+          addBinding (var, value) = do ref <- newIORef value
+                                       return (var, ref)
+
 main :: IO ()
 main = do args <- getArgs
           case length args of
