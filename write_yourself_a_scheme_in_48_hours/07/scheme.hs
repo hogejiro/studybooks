@@ -206,6 +206,7 @@ eval :: Env -> LispVal -> IOThrowsError LispVal
 eval env val @ (String _) = return val
 eval env val @ (Number _) = return val
 eval env val @ (Bool   _) = return val
+eval env (Atom id) = getVar env id
 eval env (List [Atom "quote", val]) = return val
 eval env (List [Atom "if", pred, conseq, alt]) =
     do result <- eval env pred
@@ -227,7 +228,7 @@ eval env form @ (List (Atom "case" : key : clauses)) =
             List (Atom "else" : exprs) -> mapM (eval env) exprs >>= return . last
             List ((List datums) : exprs) -> do
                 result <- eval env key
-                equality <- mapM (\x -> eqv [result, x]) datums
+                equality <- mapM (\x -> liftThrows $ eqv [result, x]) datums
                 if (Bool True) `elem` equality
                     then mapM (eval env) exprs >>= return . last
                     else eval env $ List (Atom "case" : key : tail clauses)
@@ -460,7 +461,7 @@ until_ pred prompt action = do
 runOne :: String -> IO ()
 runOne expr = nullEnv >>= flip evalAndPrint expr
 
-runRepl :: String -> IO ()
+runRepl :: IO ()
 runRepl = nullEnv >>= until_ (== "quit") (readPrompt "Lisp>>> ") . evalAndPrint
 
 type Env = IORef [(String, IORef LispVal)]
