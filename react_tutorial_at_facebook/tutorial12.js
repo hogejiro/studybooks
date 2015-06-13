@@ -1,10 +1,13 @@
-// edited from tutorial1.js
+// edited from tutorial9.js
 var CommentBox = React.createClass({
+    getInitialState: function() {
+        return {data: []};
+    },
     render: function() {
         return (
             <div className="commentBox">
                 <h1>Comments</h1>
-                <CommentList />
+                <CommentList data={this.state.data} />
                 <CommentForm />
             </div>
         );
