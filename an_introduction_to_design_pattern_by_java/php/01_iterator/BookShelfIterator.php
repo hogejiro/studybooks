@@ -1,10 +1,10 @@
 <?php
 require_once 'Iterator.php';
 
-class BookShelfIterator implements \DP\Iterator
+class BookShelfIterator implements Iterator
 {
-    private $bookshelf;
-    private $index;
+    protected $bookshelf;
+    protected $index;
 
     public function __construct(BookShelf $bookshelf)
     {
@@ -12,13 +12,14 @@ class BookShelfIterator implements \DP\Iterator
         $this->index = 0;
     }
 
-    public function hasNext()
+    public function current()
     {
-        if ($this->index < $this->bookshelf->getLength()) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->bookshelf->getBookAt($this->index);
+    }
+
+    public function key()
+    {
+        return $this->index;
     }
 
     public function next()
@@ -26,5 +27,19 @@ class BookShelfIterator implements \DP\Iterator
         $book = $this->bookshelf->getBookAt($this->index);
         $this->index++;
         return $book;
+    }
+
+    public function rewind()
+    {
+        $this->index = 0;
+    }
+
+    public function valid()
+    {
+        if ($this->index < $this->bookshelf->getLength()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

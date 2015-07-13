@@ -25,4 +25,9 @@ class BookShelf implements Aggregate
     {
         return new BookShelfIterator($this);
     }
+
+    public function reverseIterator()
+    {
+        return new BookShelfReverseIterator($this);
+    }
 }
