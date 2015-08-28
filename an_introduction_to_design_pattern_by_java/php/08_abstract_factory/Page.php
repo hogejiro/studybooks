@@ -19,11 +19,11 @@ abstract class Page
     public function output()
     {
         try {
-            $filename = $title . ".html";
+            $filename = $this->title . ".html";
             $fp = fopen($filename, "w");
             fwrite($fp, $this->makeHTML());
             fclose($fp);
-            print("$filenameを作成しました。\n");
+            print("{$filename}を作成しました。\n");
         } catch (IOException $e) {
             print $e->getMessage() . "\n";
         }
