@@ -1,10 +1,8 @@
 <?php
-require_once 'Aggregate.php';
 
-class BookShelf implements Aggregate
+class BookShelf implements IteratorAggregate
 {
     private $books = [];
-    private $last  = 0;
 
     public function getBookAt($index)
     {
@@ -21,12 +19,12 @@ class BookShelf implements Aggregate
         return count($this->books);
     }
 
-    public function iterator()
+    public function getIterator()
     {
         return new BookShelfIterator($this);
     }
 
-    public function reverseIterator()
+    public function getReverseIterator()
     {
         return new BookShelfReverseIterator($this);
     }

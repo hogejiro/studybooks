@@ -1,5 +1,4 @@
 <?php
-require_once 'BookShelfIterator.php';
 
 class BookShelfReverseIterator extends BookShelfIterator
 {

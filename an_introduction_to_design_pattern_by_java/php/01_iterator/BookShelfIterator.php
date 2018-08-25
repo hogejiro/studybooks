@@ -1,5 +1,4 @@
 <?php
-require_once 'Iterator.php';
 
 class BookShelfIterator implements Iterator
 {

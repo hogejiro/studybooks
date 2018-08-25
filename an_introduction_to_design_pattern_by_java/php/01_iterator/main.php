@@ -15,13 +15,13 @@ class IteratorRunner
         $bookshelf->appendBook(new Book("Cinderella"));
         $bookshelf->appendBook(new Book("Daddy-Long-Legs"));
 
-        $iterator = $bookshelf->iterator();
+        $iterator = $bookshelf->getIterator();
         foreach ($iterator as $it) {
             printf("%s\n", $it->getName());
         }
 
         // reverse
-        $r_iterator = $bookshelf->reverseIterator();
+        $r_iterator = $bookshelf->getReverseIterator();
         foreach ($r_iterator as $it) {
             printf("%s\n", $it->getName());
         }
